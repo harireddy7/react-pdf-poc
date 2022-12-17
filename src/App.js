@@ -1,15 +1,33 @@
-import React from 'react';
-import { PDFViewer } from '@react-pdf/renderer';
-import TextPDFViewer from './components/TextPDFViewer';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
-function App() {
+const HomeLazy = React.lazy(() => import(/* webpackChunkName: "HomeComponent" */'./pages/Home'));
+const TextPDFLazy = React.lazy(() => import(/* webpackChunkName: "TextPDFComponent" */'./pages/TextPDF'));
+
+export default function App() {
 	return (
-		<div className='container'>
-			<PDFViewer>
-				<TextPDFViewer />
-			</PDFViewer>
-		</div>
+		<Router>
+			<Suspense fallback={<div>Loading...</div>}>
+				<nav>
+					<div>
+						<Link to='/'>Home</Link>
+					</div>
+					<div>
+						<Link to='/text-pdf'>Text PDF</Link>
+					</div>
+				</nav>
+
+				<div className='route-container'>
+					<Switch>
+						<Route path='/text-pdf'>
+							<TextPDFLazy />
+						</Route>
+						<Route path='/'>
+							<HomeLazy />
+						</Route>
+					</Switch>
+				</div>
+			</Suspense>
+		</Router>
 	);
 }
-
-export default App;
